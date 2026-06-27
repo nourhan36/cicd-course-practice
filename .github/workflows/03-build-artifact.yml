@@ -36,7 +36,7 @@ jobs:
       - name: Set image tag
         # Use today's UTC date plus the GitHub run ID.
         # This keeps the tag easy to explain and still unique for the run.
-        id: docker-image-tag
+        id: image-tag
         run: |
           TODAY="$(date -u +%Y-%m-%d)"
           IMAGE_TAG="${TODAY}-${GITHUB_RUN_ID}"
