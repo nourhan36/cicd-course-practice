@@ -13,7 +13,7 @@ name: 01 Hello Workflow
 on:
   pull_request:
     types: 
-      - closed
+      - opened
     branches:
       - main
     workflow_dispatch:
