@@ -21,6 +21,7 @@ on:
 jobs:
   say-hello:
     # GitHub provides a fresh runner for the job.
+    # Check if PR is merged
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
