@@ -16,7 +16,6 @@ on:
       - closed
     branches:
       - main # PR to main
-    workflow_dispatch:
 
 jobs:
   say-hello:
