@@ -15,7 +15,7 @@ on:
     types: 
       - opened
     branches:
-      - main # push to main branch
+      - main # PR to main
     workflow_dispatch:
 
 jobs:
