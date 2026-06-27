@@ -27,14 +27,15 @@ jobs:
         # Download the repository contents onto the runner.
         uses: actions/checkout@v6
       
-      - name: pwd
+      - name: Print Repo
         run: ls
 
       - name: Set up Python
         # Prepare Python on the runner. This does not change the student laptop.
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+            python-version: ${{ secrets.PYTHON_VERSION }}
+          #python-version: ${{ env.PYTHON_VERSION }}
 
       - name: py version
         run: python --version
