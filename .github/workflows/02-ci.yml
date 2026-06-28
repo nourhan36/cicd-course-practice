@@ -1,14 +1,15 @@
 name: 02 CI Workflow
 
 on:
-  # Run automatically when app code, tests, or this workflow file changes.
   push:
     paths:
       - "app/**"
       - "tests/**"
+      - "Dockerfile"
       - ".github/workflows/02-ci.yml"
-  # Allow a safe manual run before students trigger it with a code change.
+
   workflow_dispatch:
+
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -16,27 +17,28 @@ on:
 
 jobs:
   run-tests:
-    # The runner is the temporary machine that executes the steps below.
-    # runs-on: ubuntu-latest
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
 
-
     steps:
-    # first step
       - name: Check out repository
-        # Download the repository contents onto the runner.
         uses: actions/checkout@v6
 
       - name: Set up Python
-        # Prepare Python on the runner. This does not change the student laptop.
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Install Ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run Ruff
+        run: ruff check .
 
       - name: Run Trivy Filesystem Scan
         uses: aquasecurity/trivy-action@v0.35.0
@@ -44,6 +46,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
+          output: trivy-fs-report.txt
           exit-code: 1
           severity: CRITICAL,HIGH
 
@@ -53,12 +56,35 @@ jobs:
           scan-type: config
           scan-ref: Dockerfile
           format: table
+          output: trivy-dockerfile-report.txt
           exit-code: 1
           severity: CRITICAL
+
+      - name: Upload Trivy Scan Artifact
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: trivy-scan-artifact-python-${{ matrix.python-version }}
+          path: |
+            trivy-fs-report.txt
+            trivy-dockerfile-report.txt
 
       - name: Check current time
         run: date
 
       - name: Run tests
-        # This is the key verification step in the CI workflow.
         run: python -m unittest discover -s tests -v
+
+      - name: Build Artifact Folder
+        run: |
+          mkdir -p build-artifact
+          cp -r app build-artifact/
+          cp -r tests build-artifact/
+          cp Dockerfile build-artifact/
+          cp README.md build-artifact/ || true
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: build-artifact-python-${{ matrix.python-version }}
+          path: build-artifact/
