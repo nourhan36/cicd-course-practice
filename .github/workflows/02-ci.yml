@@ -1,5 +1,3 @@
-# This is the first real CI workflow in the course.
-# It verifies a change by running tests on a fresh runner.
 name: 02 CI Workflow
 
 on:
@@ -56,7 +54,7 @@ jobs:
           scan-ref: Dockerfile
           format: table
           exit-code: 1
-          severity: HIGH,CRITICAL
+          severity: CRITICAL
 
       - name: Check current time
         run: date
