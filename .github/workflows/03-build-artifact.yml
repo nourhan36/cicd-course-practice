@@ -1,13 +1,9 @@
-# This workflow packages the verified app.
-# It is manual on purpose so Day 1 stays focused on CI.
 name: 03 Build Artifact Workflow
 
 on:
-  # Students start this workflow manually from the Actions tab.
   workflow_dispatch:
 
 env:
-  # Keep common image values in one place so the build steps stay readable.
   IMAGE_NAME: tiny-health-app
   IMAGE_TAR: tiny-health-app.tar
   IMAGE_METADATA: image-metadata.env
@@ -15,7 +11,6 @@ env:
 
 jobs:
   build-package:
-    # Use a fresh GitHub-hosted runner for the build.
     runs-on: ubuntu-latest
 
     steps:
